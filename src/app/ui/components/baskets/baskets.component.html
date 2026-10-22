@@ -1,0 +1,225 @@
+<div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #212121;">
+  <!-- Üst Başlık Barı -->
+  <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e5e5e5; padding: 20px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 44px; height: 44px; border-radius: 10px; background: #fff3eb; color: #ff6000; display: flex; align-items: center; justify-content: center;">
+        <mat-icon>shopping_cart</mat-icon>
+      </div>
+      <div>
+        <h2 style="margin: 0; font-size: 22px; font-weight: 800; color: #212121;">
+          Sepetim <span style="font-size: 15px; font-weight: 600; color: #757575;">({{ basketService.getTotalCount() }} Ürün)</span>
+        </h2>
+        <div style="font-size: 12.5px; color: #757575;">
+          Sepetinizdeki ürünleri inceleyebilir ve TurkiyeCitiesPackage teslimat adresinizle siparişinizi tamamlayabilirsiniz.
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <a
+        [routerLink]="['/']"
+        style="text-decoration: none; border: 1px solid #dadada; background: #fff; color: #484848; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+        <mat-icon style="font-size: 18px; width: 18px; height: 18px;">storefront</mat-icon>
+        Alışverişe Devam Et
+      </a>
+      <button
+        *ngIf="items.length > 0"
+        (click)="clearAll()"
+        style="border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+        <mat-icon style="font-size: 18px; width: 18px; height: 18px;">delete_sweep</mat-icon>
+        Sepeti Boşalt
+      </button>
+    </div>
+  </div>
+
+  <!-- Boş Sepet Görünümü -->
+  <div
+    *ngIf="items.length === 0"
+    style="background: #ffffff; border-radius: 12px; border: 1px solid #e5e5e5; padding: 56px 24px; text-align: center; margin-bottom: 24px;">
+    <div style="width: 76px; height: 76px; border-radius: 50%; background: #fff3eb; color: #ff6000; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+      <mat-icon style="font-size: 38px; width: 38px; height: 38px;">shopping_bag</mat-icon>
+    </div>
+    <h3 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 800; color: #212121;">Sepetin şu an boş</h3>
+    <p style="margin: 0 0 22px 0; font-size: 14px; color: #757575;">
+      HerYerHerYerde'de binlerce ürün ve süper fiyat fırsatları seni bekliyor!
+    </p>
+    <a
+      [routerLink]="['/']"
+      style="text-decoration: none; background: #ff6000; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;">
+      Alışverişe Başla
+    </a>
+  </div>
+
+  <!-- Dolu Sepet (Sol: Ürünler + Adres Seçimi | Sağ: Sipariş Özeti) -->
+  <div class="row" *ngIf="items.length > 0">
+    <div class="col-lg-8">
+      <!-- Kargo Bedava Avantaj Barı -->
+      <div style="background: #ebf9ee; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; color: #166534; font-size: 13px; font-weight: 700;">
+        <mat-icon style="color: #16a34a;">local_shipping</mat-icon>
+        Tebrikler! Sepetinizdeki ürünler için <strong>Kargo Bedava</strong> avantajından yararlanıyorsunuz.
+      </div>
+
+      <!-- Ürün Kartları -->
+      <div
+        *ngFor="let item of items"
+        style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; margin-bottom: 14px; overflow: hidden;">
+        <!-- Satıcı Başlığı -->
+        <div style="background: #fafafa; border-bottom: 1px solid #efefef; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+          <div>
+            <span style="color: #757575;">Satıcı: </span>
+            <strong style="color: #212121;">HerYerHerYerde Resmi Mağaza</strong>
+            <span style="background: #00a651; color: #fff; font-weight: 700; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-left: 6px;">9.8</span>
+          </div>
+          <span style="color: #008a45; font-weight: 700;">Yarın Kargoda</span>
+        </div>
+
+        <!-- Ürün İçeriği -->
+        <div style="padding: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 240px;">
+            <img
+              [src]="item.image"
+              [alt]="item.name"
+              style="width: 84px; height: 84px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;" />
+            <div>
+              <div style="font-size: 15px; font-weight: 700; color: #212121; margin-bottom: 6px;">
+                {{ item.name }}
+              </div>
+              <div style="font-size: 12px; color: #008a45; font-weight: 600; margin-bottom: 4px;">
+                Kargo Bedava • Hızlı Teslimat
+              </div>
+              <div style="font-size: 12px; color: #757575;">
+                Birim Fiyat: {{ item.price | currency:'₺':'symbol':'1.0-0' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Adet Kontrolü -->
+          <div style="display: flex; align-items: center; border: 1px solid #dadada; border-radius: 999px; padding: 3px 6px; background: #fff;">
+            <button
+              (click)="changeQty(item, -1)"
+              style="width: 30px; height: 30px; border: none; background: transparent; color: #ff6000; font-size: 18px; font-weight: 800; cursor: pointer;">
+              −
+            </button>
+            <span style="min-width: 32px; text-align: center; font-weight: 700; font-size: 14px; color: #212121;">
+              {{ item.quantity }}
+            </span>
+            <button
+              (click)="changeQty(item, 1)"
+              style="width: 30px; height: 30px; border: none; background: transparent; color: #ff6000; font-size: 18px; font-weight: 800; cursor: pointer;">
+              +
+            </button>
+          </div>
+
+          <!-- Satır Toplamı ve Sil -->
+          <div style="display: flex; align-items: center; gap: 14px; min-width: 140px; justify-content: flex-end;">
+            <div style="font-size: 18px; font-weight: 800; color: #ff6000;">
+              {{ item.price * item.quantity | currency:'₺':'symbol':'1.0-0' }}
+            </div>
+            <button
+              (click)="removeItem(item.productId)"
+              title="Ürünü Sil"
+              style="border: none; background: #f5f5f5; color: #757575; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px;">delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teslimat Adresi Seçimi (TurkiyeCitiesPackage) -->
+      <div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="font-size: 15px; font-weight: 800; color: #212121; display: flex; align-items: center; gap: 8px;">
+            <mat-icon style="color: #ff6000;">place</mat-icon>
+            Teslimat Adresi Seçimi (TurkiyeCitiesPackage - İl / İlçe / Mahalle)
+          </div>
+          <a
+            [routerLink]="['/addresses']"
+            style="text-decoration: none; color: #ff6000; font-size: 13px; font-weight: 700;">
+            + Yeni Adres Ekle / Yönet
+          </a>
+        </div>
+
+        <select
+          [(ngModel)]="selectedAddressText"
+          style="width: 100%; height: 46px; border: 1.5px solid #dadada; border-radius: 8px; padding: 0 12px; font-size: 13.5px; font-weight: 600; color: #212121; outline: none;">
+          <option
+            *ngFor="let addr of savedAddresses"
+            [value]="addr.title + ' - ' + addr.cityName + ' / ' + addr.districtName + ' / ' + addr.neighborhoodName">
+            {{ addr.title }} — {{ addr.cityName }} / {{ addr.districtName }} / {{ addr.neighborhoodName }} ({{ addr.description }})
+          </option>
+          <option value="Ev Adresim - İstanbul / Kadıköy / Caferağa Mah.">
+            Varsayılan Adres — İstanbul / Kadıköy / Caferağa Mah.
+          </option>
+          <option value="İş Yeri - Ankara / Çankaya / Kızılay Mah.">
+            Alternatif Adres — Ankara / Çankaya / Kızılay Mah.
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Sağ: Hepsiburada Sipariş Özeti Kartı -->
+    <div class="col-lg-4">
+      <div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 22px; position: sticky; top: 20px;">
+        <div style="font-size: 13px; font-weight: 800; color: #ff6000; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px;">
+          SEÇİLEN ÜRÜNLER ({{ basketService.getTotalCount() }})
+        </div>
+        <div style="font-size: 28px; font-weight: 900; color: #212121; margin-bottom: 18px;">
+          {{ basketService.getTotalAmount() | currency:'₺':'symbol':'1.0-0' }}
+        </div>
+
+        <button
+          (click)="completeOrder()"
+          style="width: 100%; height: 50px; border: none; border-radius: 8px; background: #ff6000; color: #ffffff; font-size: 16px; font-weight: 800; cursor: pointer; margin-bottom: 18px; box-shadow: 0 6px 16px rgba(255, 96, 0, 0.25);">
+          Alışverişi Tamamla
+        </button>
+
+        <div style="border-top: 1px solid #efefef; padding-top: 14px; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #484848;">
+            <span>Ürünler Toplamı</span>
+            <strong>{{ basketService.getTotalAmount() | currency:'₺':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #484848;">
+            <span>Kargo Tutarı</span>
+            <strong style="color: #008a45;">Bedava</strong>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; background: #fdf4ff; border: 1px solid #f5d0fe; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #701a75;">
+          <strong style="color: #a21caf;">PREMIUM</strong> ile bu siparişten <strong>%2 Hepsipara</strong> kazanç fırsatı!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Geçmiş Siparişlerim -->
+  <div
+    *ngIf="orders.length > 0"
+    style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 20px 24px; margin-top: 24px;">
+    <h3 style="margin: 0 0 14px 0; font-size: 18px; font-weight: 800; color: #212121;">
+      Son Siparişlerim ({{ orders.length }})
+    </h3>
+    <div
+      *ngFor="let ord of orders"
+      style="border: 1px solid #efefef; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <div style="font-weight: 800; color: #ff6000; font-size: 14px;">
+          Sipariş No: #{{ ord.orderNo }}
+        </div>
+        <div style="font-size: 12.5px; color: #484848; margin-top: 2px;">
+          Teslimat Adresi: {{ ord.addressSummary }}
+        </div>
+        <div style="font-size: 11.5px; color: #757575; margin-top: 2px;">
+          Tarih: {{ ord.createdAt | date:'dd.MM.yyyy HH:mm' }} • {{ ord.items.length }} Kalem Ürün
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <span style="display: inline-block; background: #ebf9ee; color: #008a45; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 4px;">
+          {{ ord.status }}
+        </span>
+        <div style="font-size: 16px; font-weight: 800; color: #212121;">
+          {{ ord.totalAmount | currency:'₺':'symbol':'1.0-0' }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

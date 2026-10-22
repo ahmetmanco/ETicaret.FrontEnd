@@ -1,0 +1,293 @@
+<div class="hb-page">
+  <!-- 1. Üst İnce Yardımcı Menü -->
+  <div class="hb-top-links">
+    <div class="hb-container hb-top-links-inner">
+      <a [routerLink]="['/baskets']">Siparişlerim</a>
+      <a (click)="goToSlide(0)" style="cursor: pointer;">Süper Fiyat, Süper Teklif</a>
+      <a [routerLink]="['/addresses']">81 İl Yarın Kapında</a>
+      <a [routerLink]="['/register']" [queryParams]="{ role: 'Seller' }" class="hb-highlight-link">HerYerHerYerde'de Satıcı Ol</a>
+      <a [routerLink]="['/login', 'seller']">Satıcı Girişi</a>
+      <a [routerLink]="['/login', 'admin']" class="hb-admin-link">Admin Paneli</a>
+    </div>
+  </div>
+
+  <!-- 2. Ana Header (Logo + Arama + Konum + Giriş/Üye Ol + Sepetim) -->
+  <header class="hb-header">
+    <div class="hb-container hb-header-inner">
+      <!-- Logo -->
+      <a [routerLink]="['/']" class="hb-logo">
+        <span class="hb-logo-text">HerYerHerYerde</span>
+        <span class="hb-logo-sub">
+          <strong style="color: #ff6000;">PREMIUM'u</strong> keşfet
+        </span>
+      </a>
+
+      <!-- Arama Kutusu -->
+      <div class="hb-search-box">
+        <mat-icon class="hb-search-icon">search</mat-icon>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Ürün, kategori veya marka ara" />
+        <button type="button" class="hb-search-btn">ARA</button>
+      </div>
+
+      <!-- Sağ Aksiyonlar: Konum (TurkiyeCitiesPackage) + Hesap (3 Giriş Bölümü) + Sepetim -->
+      <div class="hb-header-actions">
+        <!-- Konum Seç (TurkiyeCitiesPackage) -->
+        <a [routerLink]="['/addresses']" class="hb-location-widget" title="İl, İlçe ve Mahalle Seçin">
+          <mat-icon class="loc-icon">location_on</mat-icon>
+          <div class="loc-text">
+            <span class="loc-title">Konum</span>
+            <span class="loc-sub">İl / İlçe / Mahalle Seç</span>
+          </div>
+        </a>
+
+        <!-- Giriş Yap veya Hesabım Menüsü -->
+        <div class="hb-account-widget" [matMenuTriggerFor]="authMenu">
+          <mat-icon class="user-icon">person_outline</mat-icon>
+          <div class="acc-text" *ngIf="!authService.isAuthenticated()">
+            <span class="acc-title">Giriş Yap</span>
+            <span class="acc-sub">veya üye ol</span>
+          </div>
+          <div class="acc-text" *ngIf="authService.isAuthenticated()">
+            <span class="acc-title">Hesabım</span>
+            <span class="acc-sub">{{ authService.getUserName() || authService.getUserRole() }}</span>
+          </div>
+          <mat-icon class="chevron-icon">expand_more</mat-icon>
+        </div>
+
+        <mat-menu #authMenu="matMenu" class="hb-dropdown-menu">
+          <ng-container *ngIf="!authService.isAuthenticated()">
+            <div style="padding: 8px 16px; font-size: 11px; font-weight: 700; color: #7b7b7b; text-transform: uppercase;">
+              3 Farklı Giriş Bölümü
+            </div>
+            <button mat-menu-item [routerLink]="['/login', 'customer']">
+              <mat-icon style="color: #ff6000;">shopping_bag</mat-icon>
+              <span><strong>Müşteri Girişi</strong></span>
+            </button>
+            <button mat-menu-item [routerLink]="['/login', 'seller']">
+              <mat-icon style="color: #57b900;">storefront</mat-icon>
+              <span><strong>Satıcı (Mağaza) Girişi</strong></span>
+            </button>
+            <button mat-menu-item [routerLink]="['/login', 'admin']">
+              <mat-icon style="color: #7723db;">admin_panel_settings</mat-icon>
+              <span><strong>Admin (Yönetici) Girişi</strong></span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/register']" [queryParams]="{ role: 'Customer' }">
+              <mat-icon>person_add</mat-icon>
+              <span>Müşteri Olarak Üye Ol</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/register']" [queryParams]="{ role: 'Seller' }">
+              <mat-icon>add_business</mat-icon>
+              <span>Satıcı Mağaza Kaydı</span>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="authService.isAuthenticated()">
+            <div style="padding: 10px 16px; border-bottom: 1px solid #eee;">
+              <div style="font-weight: 700; color: #212121;">{{ authService.getUserName() || 'Kullanıcı' }}</div>
+              <div style="font-size: 12px; color: #ff6000; font-weight: 600;">Aktif Rol: {{ authService.getUserRole() }}</div>
+            </div>
+            <button mat-menu-item [routerLink]="['/dashboard']">
+              <mat-icon>dashboard</mat-icon>
+              <span>Kontrol Paneli</span>
+            </button>
+            <button mat-menu-item *ngIf="authService.isAdmin() || authService.isSeller()" [routerLink]="['/products']">
+              <mat-icon>inventory_2</mat-icon>
+              <span>Ürün & Çoklu Resim Yönetimi</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/addresses']">
+              <mat-icon>place</mat-icon>
+              <span>Adreslerim (İl / İlçe / Mahalle)</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/baskets']">
+              <mat-icon>shopping_cart</mat-icon>
+              <span>Sepetim ({{ basketCount }})</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="authService.logout()">
+              <mat-icon style="color: #dc2626;">logout</mat-icon>
+              <span style="color: #dc2626; font-weight: 600;">Çıkış Yap</span>
+            </button>
+          </ng-container>
+        </mat-menu>
+
+        <!-- Sepetim Butonu -->
+        <a [routerLink]="['/baskets']" class="hb-cart-btn">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>Sepetim</span>
+          <span class="hb-cart-badge">{{ basketCount }}</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. İkonik 5 Renkli Çizgi -->
+  <div class="hb-rainbow-bar">
+    <div class="hb-bar-1"></div>
+    <div class="hb-bar-2"></div>
+    <div class="hb-bar-3"></div>
+    <div class="hb-bar-4"></div>
+    <div class="hb-bar-5"></div>
+  </div>
+
+  <!-- 4. Kategori Mega Bar (Slider/Kaydırma Çubuğu Kaldırıldı) -->
+  <nav class="hb-category-nav">
+    <div class="hb-container hb-category-list">
+      <button
+        type="button"
+        *ngFor="let cat of categories"
+        class="hb-cat-item"
+        [class.active]="selectedCategory === cat"
+        (click)="selectedCategory = cat">
+        {{ cat }}
+      </button>
+    </div>
+  </nav>
+
+  <!-- 5. 1'den 10'a Kadar Kaydırmalı Kampanya & Reklam Slider Alanı -->
+  <section class="hb-hero-section">
+    <div class="hb-container">
+      <div
+        class="hb-hero-carousel-wrapper"
+        (mouseenter)="stopAutoSlide()"
+        (mouseleave)="startAutoSlide()">
+
+        <!-- Sol Kaydırma Ok Butonu -->
+        <button
+          type="button"
+          class="hb-carousel-arrow prev"
+          (click)="prevSlide()"
+          title="Önceki Kampanya">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <!-- Aktif Kampanya / Reklam Kartı (1 - 10) -->
+        <div class="hb-hero-card" [style.background]="heroBanners[activeHeroTab].bg">
+          <div class="hb-hero-content">
+            <span class="hb-hero-badge">{{ heroBanners[activeHeroTab].tag }}</span>
+            <h1>{{ heroBanners[activeHeroTab].title }}</h1>
+            <p>{{ heroBanners[activeHeroTab].subtitle }}</p>
+            <div class="hb-hero-cta-group">
+              <a [routerLink]="['/login', 'customer']" class="hb-btn-white">Müşteri Girişi</a>
+              <a [routerLink]="['/login', 'seller']" class="hb-btn-outline">Satıcı Girişi</a>
+              <a [routerLink]="['/login', 'admin']" class="hb-btn-outline">Admin Girişi</a>
+            </div>
+          </div>
+
+          <div class="hb-hero-image-box">
+            <img [src]="heroBanners[activeHeroTab].image" [alt]="heroBanners[activeHeroTab].title" />
+            <span class="hb-slide-counter">{{ activeHeroTab + 1 }} / {{ heroBanners.length }}</span>
+          </div>
+        </div>
+
+        <!-- Sağ Kaydırma Ok Butonu -->
+        <button
+          type="button"
+          class="hb-carousel-arrow next"
+          (click)="nextSlide()"
+          title="Sonraki Kampanya">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <!-- 1'den 10'a Kadar Numaralı ve Küçük Resimli Kaydırma Seçicisi -->
+      <div class="hb-hero-pagination">
+        <button
+          type="button"
+          *ngFor="let slide of heroBanners; let i = index"
+          class="hb-page-thumb"
+          [class.active]="activeHeroTab === i"
+          (click)="goToSlide(i)"
+          (mouseenter)="goToSlide(i)">
+          <img [src]="slide.image" [alt]="slide.shortLabel" />
+          <span class="hb-page-num">{{ i + 1 }}</span>
+          <span class="hb-page-label">{{ slide.shortLabel }}</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Süper Fiyat, Süper Teklif Ürün Listesi (Çoklu Resim Destekli) -->
+  <section class="hb-products-section">
+    <div class="hb-container">
+      <div class="hb-section-header">
+        <div class="hb-section-title-group">
+          <h2>Süper Fiyat, Süper Teklif</h2>
+          <span class="hb-all-link">Tümü ({{ filteredProducts.length }} Ürün) &gt;</span>
+        </div>
+        <div class="hb-portal-shortcuts" *ngIf="authService.isAdmin() || authService.isSeller()">
+          <a [routerLink]="['/products/create']" class="hb-add-product-btn">
+            <mat-icon>add_photo_alternate</mat-icon> Yeni Çoklu Resimli Ürün Ekle
+          </a>
+        </div>
+      </div>
+
+      <div class="hb-product-grid">
+        <div class="hb-product-card" *ngFor="let p of filteredProducts">
+          <!-- Üst Rozetler -->
+          <div class="hb-card-badges">
+            <span class="badge-free-ship">KARGO BEDAVA</span>
+            <span class="badge-multi-img" *ngIf="p.images.length > 1">
+              {{ (activeImageIndex[p.id] || 0) + 1 }}/{{ p.images.length }} Fotoğraf
+            </span>
+          </div>
+
+          <!-- Ürün Görseli ve Nokta Göstergeleri -->
+          <div class="hb-card-img-wrap">
+            <img [src]="p.images[activeImageIndex[p.id] || 0]" [alt]="p.name" />
+            <div class="hb-img-dots" *ngIf="p.images.length > 1">
+              <span
+                *ngFor="let imgUrl of p.images; let idx = index"
+                class="hb-dot"
+                [class.active]="(activeImageIndex[p.id] || 0) === idx"
+                (mouseenter)="selectImage(p.id, idx)"
+                (click)="selectImage(p.id, idx)"></span>
+            </div>
+          </div>
+
+          <!-- Çoklu Görsel Mini Önizleme Şeridi -->
+          <div class="hb-thumb-strip" *ngIf="p.images.length > 1">
+            <img
+              *ngFor="let imgUrl of p.images; let idx = index"
+              [src]="imgUrl"
+              [class.selected]="(activeImageIndex[p.id] || 0) === idx"
+              (mouseenter)="selectImage(p.id, idx)"
+              (click)="selectImage(p.id, idx)" />
+          </div>
+
+          <!-- Ürün Başlık & Değerlendirme -->
+          <div class="hb-card-body">
+            <h3 class="hb-product-title" [title]="p.name">{{ p.name }}</h3>
+
+            <div class="hb-rating-row">
+              <span class="hb-stars">★★★★★</span>
+              <span class="hb-review-count">({{ p.reviewCount }})</span>
+            </div>
+
+            <!-- Fiyat Alanı -->
+            <div class="hb-price-box">
+              <div class="hb-old-price-row">
+                <span class="hb-old-price">{{ p.oldPrice | number:'1.0-0' }} TL</span>
+                <span class="hb-discount-badge">%{{ p.discountRate }}</span>
+              </div>
+              <div class="hb-current-price">
+                {{ p.price | number:'1.2-2' }} <span>TL</span>
+              </div>
+              <div class="hb-tomorrow-badge">
+                <mat-icon>local_shipping</mat-icon> Yarın kapında
+              </div>
+            </div>
+
+            <!-- Sepete Ekle Butonu -->
+            <button type="button" class="hb-add-to-cart-btn" (click)="addToCart(p)">
+              Sepete ekle
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

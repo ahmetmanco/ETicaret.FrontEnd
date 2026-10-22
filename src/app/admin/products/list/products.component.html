@@ -1,0 +1,102 @@
+<div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 18px 24px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+  <div>
+    <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #212121;">Mağaza Ürün Listesi</h2>
+    <span style="font-size: 13px; color: #757575;">Her ürün için çoklu görsel (ProductImageFile) yönetimi desteklenmektedir</span>
+  </div>
+  <button
+    *ngIf="canManageProducts()"
+    mat-flat-button
+    (click)="onAdd()"
+    style="background: #ff6000; color: #ffffff; font-weight: 800; border-radius: 8px;">
+    <mat-icon>add</mat-icon> Yeni Ürün Ekle
+  </button>
+</div>
+
+<div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <table mat-table [dataSource]="dataSource" style="width: 100%;">
+    <!-- Image Column (Multiple Images Preview) -->
+    <ng-container matColumnDef="image">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> Ürün Görselleri </th>
+      <td mat-cell *matCellDef="let element" style="padding: 10px;">
+        <div *ngIf="element.imageUrls?.length > 0; else singleOrNoImage" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <img
+            *ngFor="let url of element.imageUrls.slice(0, 3)"
+            [src]="url"
+            alt="{{ element.name }}"
+            width="52"
+            height="52"
+            style="border-radius: 6px; object-fit: cover; border: 1px solid #e5e5e5;" />
+          <span
+            *ngIf="element.imageUrls.length > 3"
+            style="background: #ff6000; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px;">
+            +{{ element.imageUrls.length - 3 }}
+          </span>
+        </div>
+        <ng-template #singleOrNoImage>
+          <img
+            *ngIf="element.image"
+            [src]="element.image"
+            alt="{{ element.name }}"
+            width="54"
+            height="54"
+            style="border-radius: 6px; object-fit: cover; border: 1px solid #e5e5e5;" />
+          <span *ngIf="!element.image" class="text-muted f-s-12">Görsel Yok</span>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Name -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> Ürün Adı </th>
+      <td mat-cell *matCellDef="let element"> <strong style="color: #212121;">{{ element.name }}</strong> </td>
+    </ng-container>
+
+    <!-- Price -->
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> Fiyat </th>
+      <td mat-cell *matCellDef="let element">
+        <strong style="color: #ff6000; font-size: 15px;">{{ element.price | currency:'₺':'symbol':'1.0-0' }}</strong>
+      </td>
+    </ng-container>
+
+    <!-- Stock -->
+    <ng-container matColumnDef="stock">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> Stok </th>
+      <td mat-cell *matCellDef="let element"> {{ element.stock }} adet </td>
+    </ng-container>
+
+    <!-- Created Date -->
+    <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> Eklenme Tarihi </th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdDate | date:'dd.MM.yyyy' }} </td>
+    </ng-container>
+
+    <!-- Update Date -->
+    <ng-container matColumnDef="updateDate">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> Güncellenme </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.updateDate ? (element.updateDate | date:'dd.MM.yyyy') : '-' }}
+      </td>
+    </ng-container>
+
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="font-weight: 800; color: #212121;"> İşlemler </th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container *ngIf="canManageProducts()">
+          <button mat-icon-button style="color: #ff6000;" (click)="onEdit(element)" title="Düzenle / Resim Ekle">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="onDelete(element)" title="Sil">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

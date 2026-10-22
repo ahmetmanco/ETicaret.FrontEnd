@@ -1,0 +1,130 @@
+<div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <!-- Üst Bilgi Başlığı -->
+  <div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 18px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 44px; height: 44px; border-radius: 10px; background: #fff3eb; color: #ff6000; display: flex; align-items: center; justify-content: center;">
+        <mat-icon>location_on</mat-icon>
+      </div>
+      <div>
+        <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #212121;">
+          Teslimat Adreslerim <span style="font-size: 13px; color: #ff6000; font-weight: 700;">(TurkiyeCitiesPackage v2.0.0)</span>
+        </h2>
+        <div style="font-size: 12.5px; color: #757575;">
+          81 İl, 976 İlçe ve 32.000+ Mahalle/Köy veritabanından otomatik doldurulmaktadır.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Yeni Adres Ekleme (TurkiyeCitiesPackage: İl -> İlçe -> Mahalle) -->
+    <div class="col-lg-6 m-b-20">
+      <div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+        <div style="padding: 16px 22px; border-bottom: 1px solid #efefef; background: #fafafa; font-size: 16px; font-weight: 800; color: #212121; display: flex; align-items: center; gap: 8px;">
+          <mat-icon style="color: #ff6000;">add_location_alt</mat-icon>
+          Yeni Teslimat Adresi Ekle
+        </div>
+        <div style="padding: 22px;">
+          <form [formGroup]="form" (ngSubmit)="submitAddress()">
+            <mat-label class="f-w-600 m-b-8 d-block" style="color: #484848;">Adres Başlığı</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="title" placeholder="Örn: Ev Adresim, İş Yerim" />
+            </mat-form-field>
+
+            <!-- Şehir (İl) Seçimi -->
+            <mat-label class="f-w-600 m-b-8 d-block" style="color: #484848;">Şehir (İl)</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <mat-select
+                formControlName="cityId"
+                placeholder="İl Seçiniz (81 İl)"
+                (selectionChange)="onCityChange($event.value)">
+                <mat-option *ngFor="let city of cities" [value]="city.id">
+                  {{ city.plateCode }} - {{ city.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- İlçe Seçimi -->
+            <mat-label class="f-w-600 m-b-8 d-block" style="color: #484848;">İlçe</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <mat-select
+                formControlName="districtId"
+                placeholder="İlçe Seçiniz"
+                [disabled]="districts.length === 0"
+                (selectionChange)="onDistrictChange($event.value)">
+                <mat-option *ngFor="let dist of districts" [value]="dist.id">
+                  {{ dist.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Mahalle / Köy Seçimi -->
+            <mat-label class="f-w-600 m-b-8 d-block" style="color: #484848;">Mahalle / Köy</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <mat-select
+                formControlName="neighborhoodId"
+                placeholder="Mahalle / Köy Seçiniz"
+                [disabled]="neighborhoods.length === 0">
+                <mat-option *ngFor="let neigh of neighborhoods" [value]="neigh.id">
+                  {{ neigh.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Açık Adres -->
+            <mat-label class="f-w-600 m-b-8 d-block" style="color: #484848;">Açık Adres Detayı</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <textarea
+                matInput
+                rows="3"
+                formControlName="description"
+                placeholder="Cadde, sokak, bina no, daire no giriniz..."></textarea>
+            </mat-form-field>
+
+            <button
+              type="submit"
+              [disabled]="saving"
+              style="width: 100%; height: 48px; border: none; border-radius: 8px; background: #ff6000; color: #ffffff; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <mat-icon>save</mat-icon>
+              Adresi Kaydet
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kayıtlı Adreslerim -->
+    <div class="col-lg-6 m-b-20">
+      <div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+        <div style="padding: 16px 22px; border-bottom: 1px solid #efefef; background: #fafafa; font-size: 16px; font-weight: 800; color: #212121;">
+          Kayıtlı Adreslerim ({{ savedAddresses.length }})
+        </div>
+        <div style="padding: 22px;">
+          <div *ngIf="savedAddresses.length === 0" style="padding: 32px 16px; text-align: center; color: #757575; font-size: 13.5px;">
+            Henüz kayıtlı bir adresiniz bulunmuyor. Sol taraftan İl, İlçe ve Mahalle seçerek adres ekleyebilirsiniz.
+          </div>
+
+          <div
+            *ngFor="let addr of savedAddresses"
+            style="border: 1.5px solid #ebebeb; border-radius: 10px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+            <div>
+              <div style="font-weight: 800; font-size: 15px; color: #ff6000; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                <mat-icon style="font-size: 18px; width: 18px; height: 18px;">place</mat-icon>
+                {{ addr.title }}
+              </div>
+              <div style="font-weight: 700; font-size: 13.5px; color: #212121; margin-bottom: 4px;">
+                {{ addr.cityName }} / {{ addr.districtName }} / {{ addr.neighborhoodName }}
+              </div>
+              <div style="font-size: 13px; color: #646464;">
+                {{ addr.description }}
+              </div>
+            </div>
+            <button mat-icon-button color="warn" (click)="deleteAddress(addr.id)" title="Adresi Sil">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

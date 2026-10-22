@@ -1,0 +1,60 @@
+<app-topstrip></app-topstrip>
+<mat-sidenav-container class="mainWrapper blue_theme light-theme" autosize autoFocus dir="ltr">
+  <!-- Sol Menü (Hepsiburada Stili Sidebar) -->
+  <mat-sidenav
+    #leftsidenav
+    [mode]="isOver ? 'over' : 'side'"
+    [opened]="!isOver"
+    (openedChange)="onSidenavOpenedChange($event)"
+    (closedStart)="onSidenavClosedStart()"
+    class="sidebarNav">
+    <div class="flex-layout">
+      <div style="padding: 20px 20px 14px 20px; border-bottom: 1px solid #efefef;">
+        <a [routerLink]="['/']" style="text-decoration: none; display: block;">
+          <div style="font-size: 24px; font-weight: 900; color: #ff6000; letter-spacing: -0.8px; line-height: 1;">
+            HerYerHerYerde
+          </div>
+          <div style="font-size: 10.5px; font-weight: 700; color: #484848; margin-top: 3px;">
+            <span style="color: #ff6000; font-weight: 800;">PREMIUM</span> • Mağaza & Yönetim
+          </div>
+        </a>
+      </div>
+
+      <ng-scrollbar class="position-relative" style="height: 100%">
+        <mat-nav-list class="sidebar-list">
+          @for(item of navItems; track item) {
+            <app-nav-item [item]="item" (notify)="sidenav.toggle()"></app-nav-item>
+          }
+        </mat-nav-list>
+      </ng-scrollbar>
+
+      <div class="p-16">
+        <div style="background: #fff3eb; border-radius: 12px; padding: 14px; border: 1px solid #ffd8be;">
+          <div style="font-size: 12px; color: #ff6000; font-weight: 800; margin-bottom: 4px;">
+            Aktif Oturum: {{ authService.getUserRole() }}
+          </div>
+          <div style="font-size: 11.5px; color: #484848; font-weight: 600; margin-bottom: 10px;">
+            {{ authService.getUserName() || 'Hoş Geldiniz' }}
+          </div>
+          <button
+            mat-stroked-button
+            color="warn"
+            class="w-100"
+            style="height: 34px; font-size: 12px; background: #fff; border-radius: 8px;"
+            (click)="authService.logout(); sidenav.close()"
+            [routerLink]="['/login']">
+            <mat-icon style="font-size: 16px;">logout</mat-icon> Oturumu Kapat
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <!-- Ana İçerik -->
+  <mat-sidenav-content class="contentWrapper" #content style="background: #f5f5f5;">
+    <app-header [showToggle]="!isOver" (toggleMobileNav)="sidenav.toggle()"></app-header>
+    <main class="pageWrapper minWidth" style="padding: 24px;">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

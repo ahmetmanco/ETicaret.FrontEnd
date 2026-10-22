@@ -1,0 +1,5 @@
+@import '../login/login.component.scss';
+
+.role-tabs {
+  grid-template-columns: repeat(2, 1fr);
+}

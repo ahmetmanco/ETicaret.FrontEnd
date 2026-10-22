@@ -1,0 +1,74 @@
+<mat-toolbar class="topbar gap-10" style="background: #ffffff; border-bottom: 1px solid #e5e5e5; padding: 0 24px; height: 68px;">
+  <!-- Mobile Menu -->
+  <button mat-icon-button (click)="toggleMobileNav.emit()" class="d-flex d-lg-none justify-content-center">
+    <i-tabler name="menu-2" class="icon-20 d-flex"></i-tabler>
+  </button>
+
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <span style="font-weight: 800; font-size: 18px; color: #212121;">Yönetim & Mağaza Paneli</span>
+    <span
+      *ngIf="isAuthenticated"
+      style="padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #fff;"
+      [style.background]="authService.isAdmin() ? '#6b21a8' : authService.isSeller() ? '#008a45' : '#ff6000'">
+      {{ authService.getUserRole() === 'Admin' ? 'Yönetici (Admin)' : authService.getUserRole() === 'Seller' ? 'Satıcı Mağaza' : 'Müşteri Hesabı' }}
+    </span>
+  </div>
+
+  <span class="flex-1-auto"></span>
+
+  <!-- Hızlı Aksiyon Butonları (Hepsiburada Turuncu Stili) -->
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <a
+      mat-stroked-button
+      [routerLink]="['/']"
+      style="border-radius: 8px; border-color: #dadada; color: #484848; font-weight: 700;">
+      <mat-icon>storefront</mat-icon>
+      Vitrine Dön
+    </a>
+
+    <a
+      mat-stroked-button
+      [routerLink]="['/addresses']"
+      style="border-radius: 8px; border-color: #ff6000; color: #ff6000; font-weight: 700;">
+      <mat-icon>location_on</mat-icon>
+      Adreslerim
+    </a>
+
+    <a
+      mat-flat-button
+      [routerLink]="['/baskets']"
+      style="border-radius: 8px; background: #919191; color: #fff; font-weight: 700;">
+      <mat-icon>shopping_cart</mat-icon>
+      Sepetim
+      <span style="background: #ff6000; color: #fff; padding: 1px 7px; border-radius: 999px; font-size: 11px; margin-left: 4px;">
+        {{ basketCount }}
+      </span>
+    </a>
+
+    <ng-container *ngIf="isAuthenticated">
+      <button mat-mini-fab [matMenuTriggerFor]="profilemenu" style="background: #fff3eb; box-shadow: none;">
+        <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover d-block" width="36" />
+      </button>
+      <mat-menu #profilemenu="matMenu" class="cardWithShadow topbar-dd">
+        <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9;">
+          <div style="font-weight: 800; color: #212121;">{{ authService.getUserName() || 'Kullanıcı' }}</div>
+          <div style="font-size: 12px; color: #ff6000; font-weight: 700;">Rol: {{ authService.getUserRole() }}</div>
+        </div>
+        <button mat-menu-item [routerLink]="['/dashboard']">
+          <mat-icon>dashboard</mat-icon> Vitrin & Panel
+        </button>
+        <button mat-menu-item [routerLink]="['/addresses']">
+          <mat-icon>place</mat-icon> Adres Yönetimi
+        </button>
+        <button mat-menu-item [routerLink]="['/baskets']">
+          <mat-icon>shopping_basket</mat-icon> Sepetim ({{ basketCount }})
+        </button>
+        <div class="p-x-12 m-t-12">
+          <button mat-stroked-button color="warn" class="w-100" (click)="logout()">
+            <mat-icon>logout</mat-icon> Çıkış Yap
+          </button>
+        </div>
+      </mat-menu>
+    </ng-container>
+  </div>
+</mat-toolbar>

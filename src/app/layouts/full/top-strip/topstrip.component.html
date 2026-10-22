@@ -1,0 +1,26 @@
+<div style="background: #ffffff; border-bottom: 1px solid #efefef;">
+  <div style="padding: 6px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #484848;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a [routerLink]="['/']" style="text-decoration: none; background: #ff6000; color: #fff; padding: 2px 10px; border-radius: 4px; font-weight: 800; font-size: 11px;">
+        HerYerHerYerde
+      </a>
+      <span style="color: #7b7b7b; font-weight: 600;">81 İl • 976 İlçe • 32.000+ Mahalle Destekli E-Ticaret Platformu</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px;" *ngIf="!isAuthenticated">
+      <a [routerLink]="['/login', 'customer']" style="color: #ff6000; text-decoration: none; font-weight: 700;">Müşteri Girişi</a>
+      <span style="color: #dadada;">|</span>
+      <a [routerLink]="['/login', 'seller']" style="color: #008a45; text-decoration: none; font-weight: 700;">Satıcı Girişi</a>
+      <span style="color: #dadada;">|</span>
+      <a [routerLink]="['/login', 'admin']" style="color: #6b21a8; text-decoration: none; font-weight: 700;">Admin Girişi</a>
+    </div>
+  </div>
+  <!-- Hepsiburada İmzalı 5 Renkli Şerit -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; height: 5px; width: 100%;">
+    <span style="background: #ff6000;"></span>
+    <span style="background: #49c7ed;"></span>
+    <span style="background: #7723db;"></span>
+    <span style="background: #57b900;"></span>
+    <span style="background: #5d196a;"></span>
+  </div>
+</div>

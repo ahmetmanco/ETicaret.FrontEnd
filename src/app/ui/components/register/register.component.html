@@ -1,0 +1,140 @@
+<div class="hb-auth-page">
+  <!-- Üst Logo -->
+  <div class="hb-auth-logo-wrap">
+    <a [routerLink]="['/']" class="hb-auth-logo">HerYerHerYerde</a>
+  </div>
+
+  <!-- Ana Kayıt Kartı -->
+  <div class="hb-auth-card" style="max-width: 520px;">
+    <!-- İkonik 5 Renkli Hepsiburada Çizgisi -->
+    <div class="hb-rainbow-bar">
+      <div class="hb-bar-1"></div>
+      <div class="hb-bar-2"></div>
+      <div class="hb-bar-3"></div>
+      <div class="hb-bar-4"></div>
+      <div class="hb-bar-5"></div>
+    </div>
+
+    <div class="hb-auth-card-inner">
+      <!-- Giriş Yap / Üye Ol Üst Sekmeler -->
+      <div class="hb-main-tabs">
+        <a [routerLink]="['/login', selectedRole.toLowerCase()]" class="hb-main-tab">Giriş yap</a>
+        <a [routerLink]="['/register']" class="hb-main-tab active">Üye ol</a>
+      </div>
+
+      <!-- Müşteri / Satıcı Kayıt Seçimi -->
+      <div class="hb-role-label">Üyelik Türü Seçin:</div>
+      <div class="hb-role-selector" style="grid-template-columns: 1fr 1fr;">
+        <button
+          type="button"
+          class="hb-role-pill"
+          [class.active]="selectedRole === 'Customer'"
+          (click)="selectRole('Customer')">
+          <mat-icon>shopping_bag</mat-icon>
+          <span>Müşteri Üyeliği</span>
+        </button>
+
+        <button
+          type="button"
+          class="hb-role-pill seller"
+          [class.active]="selectedRole === 'Seller'"
+          (click)="selectRole('Seller')">
+          <mat-icon>storefront</mat-icon>
+          <span>Satıcı (Mağaza) Üyeliği</span>
+        </button>
+      </div>
+
+      <!-- Google ile Hızlı Kayıt -->
+      <div class="hb-social-section" style="margin-top: 0; margin-bottom: 18px;">
+        <div class="hb-google-wrap">
+          <asl-google-signin-button
+            type="standard"
+            size="large"
+            theme="outline"
+            text="signup_with"
+            shape="rectangular">
+          </asl-google-signin-button>
+        </div>
+        <div class="hb-social-divider" style="margin-top: 16px; margin-bottom: 0;">
+          <span>veya e-posta ile üye ol</span>
+        </div>
+      </div>
+
+      <!-- Kayıt Formu -->
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Ad</mat-label>
+              <input matInput formControlName="firstName" placeholder="Adınız" />
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Soyad</mat-label>
+              <input matInput formControlName="lastName" placeholder="Soyadınız" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Kullanıcı Adı</mat-label>
+              <input matInput formControlName="uname" placeholder="kullaniciadi" />
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>E-posta adresi</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="ornek@gmail.com" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Satıcı Özel Alanları -->
+        <div class="row" *ngIf="selectedRole === 'Seller'">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Mağaza Adı</mat-label>
+              <input matInput formControlName="storeName" placeholder="Örn: TeknoMarket" />
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Vergi / TC Kimlik No</mat-label>
+              <input matInput formControlName="taxNumber" placeholder="Vergi veya TC No" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Şifre</mat-label>
+              <input matInput type="password" formControlName="password" placeholder="En az 6 karakter" />
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Şifre Tekrar</mat-label>
+              <input matInput type="password" formControlName="confirmPassword" placeholder="Şifre tekrar" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-error *ngIf="form.errors?.['passwordMismatch'] && form.touched" class="text-danger text-center d-block m-b-12">
+          Şifreler eşleşmiyor.
+        </mat-error>
+
+        <button type="submit" class="hb-submit-btn" [disabled]="isLoading">
+          {{ selectedRole === 'Seller' ? 'Satıcı Olarak Üye Ol' : 'Müşteri Olarak Üye Ol' }}
+        </button>
+      </form>
+
+      <div class="hb-back-home">
+        <a [routerLink]="['/']">&larr; Ana Sayfaya (Vitrine) Dön</a>
+      </div>
+    </div>
+  </div>
+</div>

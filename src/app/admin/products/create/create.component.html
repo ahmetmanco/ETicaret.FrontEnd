@@ -1,0 +1,96 @@
+<div style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="padding: 18px 24px; border-bottom: 1px solid #efefef; background: #fafafa; display: flex; align-items: center; gap: 10px;">
+    <mat-icon style="color: #ff6000;">add_photo_alternate</mat-icon>
+    <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #212121;">
+      Yeni Ürün Ekle (Çoklu Görsel Destekli)
+    </h3>
+  </div>
+
+  <div style="padding: 24px;">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="row">
+        <div class="col-lg-12">
+          <mat-label class="f-w-600 m-b-8 d-block">Ürün Adı (En az 5 karakter)</mat-label>
+          <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input matInput formControlName="name" placeholder="Örn: Apple iPhone 16 Pro 256 GB" />
+          </mat-form-field>
+
+          <div class="row">
+            <div class="col-lg-6">
+              <mat-label class="f-w-600 m-b-8 d-block">Fiyat (₺)</mat-label>
+              <mat-form-field appearance="outline" class="w-100" color="primary">
+                <input matInput formControlName="price" type="number" placeholder="Fiyat" />
+              </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+              <mat-label class="f-w-600 m-b-8 d-block">Stok Adedi</mat-label>
+              <mat-form-field appearance="outline" class="w-100" color="primary">
+                <input matInput formControlName="stock" type="number" placeholder="Stok" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-label class="f-w-600 m-b-8 d-block">Ürün Görselleri (Birden fazla resim seçebilirsiniz)</mat-label>
+          <button
+            mat-flat-button
+            type="button"
+            (click)="fileInput.click()"
+            style="background: #fff3eb; color: #ff6000; border: 1.5px dashed #ff6000; font-weight: 800; border-radius: 8px; padding: 10px 18px;">
+            <mat-icon>collections</mat-icon> Ürün Resimlerini Seç ({{ selectedFiles.length }} seçili)
+          </button>
+          <input
+            type="file"
+            #fileInput
+            hidden
+            multiple
+            (change)="onFilesSelected($event)"
+            accept=".jpg, .jpeg, .png, .webp" />
+
+          <!-- Çoklu Resim Önizleme Galerisi -->
+          <div *ngIf="imagePreviews.length > 0" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+            <div
+              *ngFor="let item of imagePreviews; let i = index"
+              style="position: relative; border: 1.5px solid #e5e5e5; border-radius: 10px; padding: 8px; background: #fff; width: 144px; text-align: center;">
+              <span
+                *ngIf="i === 0"
+                style="position: absolute; top: 8px; left: 8px; background: #ff6000; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px;">
+                Ana Görsel
+              </span>
+              <img
+                [src]="item.url"
+                alt="Önizleme"
+                style="width: 124px; height: 124px; object-fit: cover; border-radius: 6px;" />
+              <div style="font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 4px; color: #484848;">
+                {{ item.file.name }}
+              </div>
+              <button
+                mat-icon-button
+                color="warn"
+                type="button"
+                (click)="removeSelectedImage(i)"
+                style="position: absolute; top: 2px; right: 2px; background: rgba(255,255,255,0.9);">
+                <mat-icon style="font-size: 18px;">close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="m-t-20" style="display: flex; gap: 10px;">
+        <button
+          mat-flat-button
+          type="submit"
+          style="background: #ff6000; color: #ffffff; font-weight: 800; border-radius: 8px; padding: 0 24px; height: 44px;">
+          Ürünü Kaydet
+        </button>
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="goBack()"
+          style="border-radius: 8px; height: 44px;">
+          İptal
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
